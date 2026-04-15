@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Undangan Pernikahan - Putri & Putra</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cinzel:wght@400;600&family=Lato:wght@300;400;700&display=swap"
+        rel="stylesheet" />
+
+    <style>
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            font-family: 'Lato', sans-serif;
+        }
+
+        /* ============================================================
+       LAYOUT: DUA PANEL BERDAMPINGAN
+       Kiri = Cover/Amplop   |   Kanan = Detail + Foto
+       Di mobile, hanya panel kanan yang tampil (fullscreen)
+       ============================================================ */
+        #app {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* ============================================================
+       PANEL KIRI — Cover Amplop
+       Hanya tampil di layar lebar (desktop/tablet landscape)
+       ============================================================ */
+        #panel-left {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+
+            /* ASET 1: Background panel kiri (tekstur kertas / watercolor)
+         Ganti dengan path file background kamu.
+         Disarankan: gambar bertekstur lembut, warm tone, 1000x1500px+ */
+            background-color: #ebfaff;
+            /* Warna fallback jika gambar belum ada */
+            background-image: url('assets/images/Aset 14.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Sembunyikan panel kiri di mobile */
+        @media (max-width: 768px) {
+            #panel-left {
+                display: none;
+            }
+        }
+
+        /* ---- Dekorasi daun panel kiri ---- */
+
+        /* ASET 2: Daun / Bunga pojok kiri atas panel kiri
+       PNG transparan, ukuran bebas, ~200-300px lebar */
+        .leaf-top-left {
+            position: absolute;
+            top: -120px;
+            left: -130px;
+            width: 40%;
+            pointer-events: none;
+            transform: rotate(150deg);
+        }
+
+        /* Ganti <div> dengan: <img class="leaf-top-left" src="GANTI_DAUN_KIRI_ATAS.png" alt=""> */
+
+        /* ASET 3: Daun / Bunga pojok kanan atas panel kiri */
+        .leaf-top-right {
+            position: absolute;
+            top: -80px;
+            right: -210px;
+            width: 40%;
+            pointer-events: none;
+            transform: rotate(210deg);
+        }
+
+        /* <img class="leaf-top-right" src="GANTI_DAUN_KANAN_ATAS.png" alt=""> */
+
+        /* ASET 4: Daun / Bunga pojok kiri bawah panel kiri */
+        .leaf-bottom-left {
+            position: absolute;
+            bottom: -50px;
+            left: -210px;
+            width: 40%;
+            pointer-events: none;
+            transform: rotate(30deg);
+        }
+
+        /* <img class="leaf-bottom-left" src="GANTI_DAUN_KIRI_BAWAH.png" alt=""> */
+
+        /* ASET 5: Daun / Bunga pojok kanan bawah panel kiri */
+        .leaf-bottom-right {
+            position: absolute;
+            bottom: -120px;
+            right: -130px;
+            width: 40%;
+            pointer-events: none;
+            transform: rotate(320deg);
+        }
+
+        /* <img class="leaf-bottom-right" src="GANTI_DAUN_KANAN_BAWAH.png" alt=""> */
+
+        /* ---- Konten teks panel kiri ---- */
+        .left-content {
+            position: relative;
+            z-index: 5;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .left-content .label-wedding {
+            font-family: 'Cinzel', serif;
+            font-size: 0.8rem;
+            letter-spacing: 0.25em;
+            font-weight: 600;
+            color: #2c5d6d;
+            text-transform: uppercase;
+        }
+
+        /* ASET 6 (Opsional): Nama pasangan sebagai gambar kaligrafi
+       Jika punya file PNG nama kaligrafi, ganti <h1> dengan <img> */
+        .left-content .couple-name {
+            font-family: 'Great Vibes', cursive;
+            /* Ganti font jika ada font custom */
+            font-size: clamp(4rem, 6vw, 2.9rem);
+            color: #a37a65;
+            line-height: 1.1;
+        }
+
+        .left-content .wedding-date {
+            font-family: 'Lato', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: #2c5d6d;
+            letter-spacing: 0.05em;
+        }
+
+        /* ============================================================
+       PANEL KANAN — Detail + Foto Pasangan
+       Di mobile ini jadi fullscreen
+       ============================================================ */
+        #panel-right {
+            width: 420px;
+            /* Lebar panel kanan di desktop */
+            flex-shrink: 0;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+
+            /* ASET 7: Background panel kanan
+         Biasanya sama dengan panel kiri, atau warna polos */
+            background-color: #ebfaff;
+            background-image: url('assets/images/Aset 14.png');
+            background-size: cover;
+            background-position: center bottom;
+        }
+
+        /* Di mobile, panel kanan fullscreen */
+        @media (max-width: 768px) {
+            #panel-right {
+                width: 100%;
+                height: 100vh;
+            }
+        }
+
+        /* ============================================================
+       ASET 8: FOTO PASANGAN — Bagian atas panel kanan
+       Foto prewedding, muncul di 55% atas panel kanan.
+       Foto di-fade ke bawah dengan gradient.
+       ============================================================ */
+        #photo-couple {
+            position: relative;
+            width: 100%;
+            height: 55%;
+            /* Sesuaikan tinggi area foto */
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        #photo-couple img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top center;
+            /* Fokus ke wajah, sesuaikan jika perlu */
+            display: block;
+        }
+
+        /* Gradient fade foto ke bawah (agar menyatu dengan konten) */
+        #photo-couple::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 45%;
+            /* Sesuaikan warna gradient dengan background panel kanan kamu */
+            background: linear-gradient(to bottom, transparent, #ebfaff);
+        }
+
+        /* ============================================================
+   ASET 32 (DEKORASI POJOK ATAS) — Kiri & Kanan atas
+   ============================================================ */
+        .deco-top-left {
+            position: absolute;
+            top: -100px;
+            left: -90px;
+            width: 42%;
+            /* SESUAIKAN: lebar daun pojok kiri */
+            pointer-events: none;
+            z-index: 11;
+            transform: rotate(325deg);
+            /* di atas foto */
+        }
+
+        .deco-top-right {
+            position: absolute;
+            top: -100px;
+            right: -95px;
+            width: 42%;
+            /* SESUAIKAN: lebar daun pojok kanan */
+            pointer-events: none;
+            z-index: 11;
+            transform: scaleX(-1);
+            transform: rotate(35deg);
+            /* UBAH: mirror agar simetris */
+        }
+
+        /* ============================================================
+   ASET 5 (POHON/DEKORASI BAWAH) — Overlay di atas gradient foto
+   Posisi: di atas area transisi foto ke konten teks
+   ============================================================ */
+        .deco-bottom-trees {
+            position: absolute;
+            bottom: -65px;
+            /* SESUAIKAN: agar pohon tepat di atas tombol */
+            left: -42px;
+            width: 118%;
+            pointer-events: none;
+            z-index: 4;
+            /* Pastikan gambar PNG transparan agar menyatu */
+        }
+
+        /* ============================================================
+   ASET 6 (LOGO/SEMESTA MOMEN) — Atas tengah, di atas foto
+   ============================================================ */
+        .logo-top-center {
+            position: absolute;
+            top: 16px;
+            /* SESUAIKAN: jarak dari atas */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 28%;
+            /* SESUAIKAN: ukuran logo */
+            pointer-events: none;
+            z-index: 10;
+            /* paling atas */
+        }
+
+        /* ============================================================
+   ASET 7 (DEKORASI ATAS TENGAH ) — Atas tengah, di atas foto
+   ============================================================ */
+        .deco-top-center {
+            position: absolute;
+            top: -155px;
+            /* SESUAIKAN: jarak dari atas */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 85%;
+            /* SESUAIKAN: ukuran logo */
+            pointer-events: none;
+            z-index: 10;
+            opacity: 0.8;
+            /* paling atas */
+        }
+
+        /* ============================================================
+       KONTEN BAWAH PANEL KANAN
+       (Nama, kepada yth, tombol buka undangan)
+       ============================================================ */
+        #right-content {
+            position: relative;
+            z-index: 5;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 32px 40px;
+            text-align: center;
+            gap: 8px;
+
+            /* Dekorasi daun kanan bawah panel kanan */
+            /* ASET 9: Daun pojok kanan bawah panel kanan (opsional) */
+        }
+
+        /* ASET 9 placeholder - daun pojok kanan bawah */
+        .leaf-panel-right-bottom {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 45%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* <img class="leaf-panel-right-bottom" src="GANTI_DAUN_PANEL_KANAN.png" alt=""> */
+
+        #right-content .label-wedding {
+            font-family: 'Cinzel', serif;
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            font-weight: 600;
+            color: #2c5d6d;
+            text-transform: uppercase;
+            position: absolute;
+            bottom: 350px;
+            z-index: 1;
+        }
+
+        /* ASET 10 (Opsional): Nama kaligrafi versi panel kanan
+       Bisa sama dengan ASET 6 atau versi lebih kecil */
+        #right-content .couple-name {
+            font-family: 'Great Vibes', cursive;
+            font-size: clamp(4rem, 6vw, 2.9rem);
+            color: #a37a65;
+            line-height: 1.1;
+            position: absolute;
+            bottom: 275px;
+            z-index: 1;
+        }
+
+        /* Bagian "Kepada Yth." */
+        #right-content .kepada {
+            margin-top: 8px;
+            position: absolute;
+            bottom: 220px;
+            z-index: 1;
+        }
+
+        #right-content .kepada p {
+            font-size: 0.88rem;
+            color: #2c5d6d;
+            line-height: 1.7;
+        }
+
+        #right-content .kepada .nama-tamu {
+            font-weight: 700;
+            color: #2c5d6d;
+            font-size: 0.95rem;
+        }
+
+        #right-content .note {
+            font-size: 0.72rem;
+            color: #a08878;
+            font-style: italic;
+            position: absolute;
+            bottom: 170px;
+            z-index: 1;
+        }
+
+        /* ============================================================
+       TOMBOL "Buka Undangan"
+       ============================================================ */
+        #btn-buka {
+            position: absolute;
+            bottom: 110px;
+            margin-top: 16px;
+            padding: 14px 36px;
+            border: none;
+            border-radius: 100px;
+            cursor: pointer;
+            z-index: 11;
+
+            /* Warna tombol — sesuaikan dengan palet undangan kamu */
+            background-color: #6b5349;
+            color: #ffffff;
+
+            font-family: 'Lato', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        #btn-buka:hover {
+            background-color: #4e3a31;
+            transform: scale(1.03);
+        }
+
+        /* ============================================================
+       HALAMAN UNDANGAN — Muncul setelah tombol diklik
+       Tambahkan section detail acara, RSVP, galeri, dll. di sini
+       ============================================================ */
+        #invitation-page {
+            display: none;
+            width: 100%;
+            min-height: 100vh;
+            overflow-y: auto;
+
+            /* ASET 11: Background halaman undangan full
+         Bisa sama dengan background panel kiri/kanan */
+            background-color: #ebfaff;
+            background-image: url('GANTI_BG_UNDANGAN.jpg');
+            background-size: cover;
+            background-attachment: fixed;
+        }
+
+        .invitation-inner {
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 60px 24px;
+            text-align: center;
+        }
+
+        /* ============================================================
+       ANIMASI
+       ============================================================ */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-up {
+            animation: fadeUp 0.7s ease forwards;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ============================================================
+       APP WRAPPER: Dua panel berdampingan
+       ============================================================ -->
+    <div id="app">
+
+        <!-- ==================== PANEL KIRI ======================== -->
+        <div id="panel-left">
+
+            <!-- ASET 2: Daun kiri atas -->
+            <img class="leaf-top-left" src="assets/images/Aset 2.png" alt="">
+            <!-- <div class="leaf-top-left" style="height:200px;background:rgba(0,0,0,0.05);border-radius:0 0 50% 0;"></div> -->
+
+            <!-- ASET 3: Daun kanan atas -->
+            <img class="leaf-top-right" src="assets/images/Aset 2.png" alt="">
+            <!-- <div class="leaf-top-right" style="height:160px;background:rgba(0,0,0,0.05);border-radius:0 0 0 50%;"></div> -->
+
+            <!-- Konten teks tengah panel kiri -->
+            <div class="left-content">
+                <p class="label-wedding">The Wedding Of</p>
+
+                <!-- ASET 6: Nama kaligrafi (opsional ganti dengan <img>) -->
+                <!-- <img src="GANTI_NAMA_KALIGRAFI.png" alt="Putri & Putra" style="max-width:320px;"> -->
+                <h1 class="couple-name">Putri &amp; Putra</h1>
+
+                <p class="wedding-date">Minggu, 28 Desember 2027</p>
+            </div>
+
+            <!-- ASET 4: Daun kiri bawah -->
+            <img class="leaf-bottom-left" src="assets/images/Aset 2.png" alt="">
+            <!-- <div class="leaf-bottom-left" style="height:200px;background:rgba(0,0,0,0.05);border-radius:0 50% 0 0;">
+            </div> -->
+
+            <!-- ASET 5: Daun kanan bawah -->
+            <img class="leaf-bottom-right" src="assets/images/Aset 2.png" alt="">
+            <!-- <div class="leaf-bottom-right" style="height:160px;background:rgba(0,0,0,0.05);border-radius:50% 0 0 0;">
+            </div> -->
+
+        </div><!-- end #panel-left -->
+
+
+        <!-- ==================== PANEL KANAN ======================= -->
+        <div id="panel-right">
+
+            <!-- TAMBAH: Aset 32 pojok kiri atas (daun/dekorasi) -->
+            <img class="deco-top-left" src="assets/images/Aset 32.png" alt="">
+
+            <!-- TAMBAH: Aset 32 pojok kanan atas (di-mirror via CSS) -->
+            <img class="deco-top-right" src="assets/images/Aset 32.png" alt="">
+
+            <!-- TAMBAH: Aset 6 logo tengah atas -->
+            <img class="logo-top-center" src="assets/images/Aset 5.png" alt="">
+
+            <img class="deco-top-center" src="assets/images/Aset 6.png" alt="">
+
+            <!-- ASET 8: Foto pasangan -->
+            <div id="photo-couple">
+                <img src="assets/images/Salinan dari Dilon & Aliyah (27).png" alt="Foto Putri & Putra">
+                <!--
+            </div>
+          Ganti <div> placeholder di bawah dengan:
+
+          Tips:
+          - Gunakan foto portrait (tinggi > lebar)
+          - object-position: top center  → wajah muncul di atas
+          - object-position: center      → foto rata tengah
+        -->
+            </div>
+
+            <!-- TAMBAH: Aset 5 dekorasi pohon bawah (overlay di atas foto) -->
+            <img class="deco-bottom-trees" src="assets/images/Aset 7.png" alt="">
+
+            <!-- Konten bawah panel kanan -->
+            <div id="right-content">
+
+                <!-- ASET 9: Daun kanan bawah (opsional) -->
+                <!-- <img class="leaf-panel-right-bottom" src="GANTI_DAUN_PANEL_KANAN.png" alt=""> -->
+
+                <p class="label-wedding">The Wedding Of</p>
+
+                <!-- ASET 10: Nama kaligrafi versi panel kanan (opsional ganti dengan <img>) -->
+                <h2 class="couple-name">Putri &amp; Putra</h2>
+
+                <!-- Bagian kepada tamu -->
+                <div class="kepada">
+                    <p>Kepada Yth.</p>
+                    <!--
+            Nama tamu bisa diisi dinamis via URL parameter.
+            Contoh URL: index.html?to=Bapak+Ahmad
+            Script di bawah akan membaca dan menampilkan nama ini.
+          -->
+                    <p class="nama-tamu" id="guest-name">Bapak/Ibu/Saudara/i</p>
+                </div>
+
+                <p class="note">*Mohon maaf jika ada kesalahan dalam penulisan nama / gelar.</p>
+
+                <!-- Tombol buka undangan -->
+                <button id="btn-buka" onclick="bukaUndangan()">
+                    Buka Undangan
+                </button>
+
+                <!-- <img src="assets/images/Aset 7.png" alt="Foto Putri & Putra"> -->
+
+            </div><!-- end #right-content -->
+
+        </div><!-- end #panel-right -->
+
+    </div><!-- end #app -->
+
+
+    <!-- ============================================================
+       HALAMAN UNDANGAN PENUH
+       Tampil setelah tombol "Buka Undangan" diklik.
+       Tambahkan section-section di dalam .invitation-inner
+       ============================================================ -->
+    <div id="invitation-page">
+        <div class="invitation-inner">
+
+            <h2 style="font-family:'Great Vibes',cursive;font-size:3rem;color:#a37a65;margin-bottom:16px;">
+                Putri &amp; Putra
+            </h2>
+            <p style="color:#7a6555;line-height:1.8;">
+                Tambahkan konten undangan di sini.
+            </p>
+
+            <!--
+        ============================================================
+        Struktur section yang bisa kamu tambahkan:
+        ============================================================
+
+        <section id="sec-bismillah">
+          Ayat / kalimat pembuka / bismillah
+        </section>
+
+        <section id="sec-mempelai">
+          Nama lengkap kedua mempelai & nama orang tua
+        </section>
+
+        <section id="sec-acara">
+          Detail akad & resepsi: tanggal, waktu, lokasi
+        </section>
+
+        <section id="sec-countdown">
+          Hitung mundur menuju hari H
+        </section>
+
+        <section id="sec-gallery">
+          Galeri foto prewedding
+        </section>
+
+        <section id="sec-maps">
+          Peta lokasi (Google Maps embed)
+        </section>
+
+        <section id="sec-rsvp">
+          Form konfirmasi kehadiran tamu
+        </section>
+
+        <section id="sec-doa">
+          Ucapan & doa dari tamu
+        </section>
+        ============================================================
+      -->
+
+        </div>
+    </div>
+
+
+    <script>
+        /* ============================================================
+           NAMA TAMU DINAMIS VIA URL PARAMETER
+           Contoh URL: undangan.html?to=Bapak+Rudi+Hartono
+           ============================================================ */
+        (function () {
+            const params = new URLSearchParams(window.location.search);
+            const namaParam = params.get('to');
+            if (namaParam) {
+                document.getElementById('guest-name').textContent = decodeURIComponent(namaParam);
+            }
+        })();
+
+        /* ============================================================
+           FUNGSI: Buka Undangan
+           Menyembunyikan cover dan menampilkan halaman undangan
+           ============================================================ */
+        function bukaUndangan() {
+            const app = document.getElementById('app');
+            const page = document.getElementById('invitation-page');
+
+            app.style.transition = 'opacity 0.5s ease';
+            app.style.opacity = '0';
+
+            setTimeout(() => {
+                app.style.display = 'none';
+                page.style.display = 'block';
+                page.classList.add('fade-up');
+                window.scrollTo({ top: 0 });
+                document.body.style.overflowY = 'auto';
+            }, 500);
+        }
+
+        /*
+          ============================================================
+          TIPS TAMBAHAN:
+          ============================================================
+    
+          1. MUSIK LATAR — tambahkan di dalam <body>:
+             <audio id="musik" src="GANTI_MUSIK.mp3" loop></audio>
+             Lalu play dari dalam bukaUndangan():
+             document.getElementById('musik').play();
+    
+          2. ANIMASI MASUK — tambahkan class 'fade-up' ke elemen
+             saat pertama dimuat untuk efek animasi muncul.
+    
+          3. COUNTDOWN TIMER — contoh sederhana:
+             const target = new Date('2027-12-28T00:00:00');
+             setInterval(() => {
+               const diff = target - new Date();
+               const hari = Math.floor(diff / 86400000);
+               // tampilkan hari, jam, menit, detik
+             }, 1000);
+    
+          4. GOOGLE MAPS EMBED — di section #sec-maps:
+             <iframe
+               src="https://maps.google.com/maps?q=NAMA+VENUE&output=embed"
+               width="100%" height="300" style="border:0;" allowfullscreen>
+             </iframe>
+          ============================================================
+        */
+    </script>
+
+</body>
+
+</html>
