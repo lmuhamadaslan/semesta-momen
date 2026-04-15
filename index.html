@@ -23,6 +23,8 @@
             width: 100%;
             height: 100%;
             font-family: 'Lato', sans-serif;
+            overflow: hidden;
+            /* TAMBAH: cegah scroll */
         }
 
         /* ============================================================
@@ -35,6 +37,10 @@
             width: 100%;
             height: 100vh;
             overflow: hidden;
+            position: fixed;
+            /* TAMBAH: kunci posisi */
+            top: 0;
+            left: 0;
         }
 
         /* ============================================================
@@ -181,6 +187,14 @@
             #panel-right {
                 width: 100%;
                 height: 100vh;
+                height: 100dvh;
+                /* TAMBAH: dynamic viewport height, fix browser bar di hp */
+                overflow: hidden;
+                /* TAMBAH */
+                position: fixed;
+                /* TAMBAH */
+                top: 0;
+                left: 0;
             }
         }
 
